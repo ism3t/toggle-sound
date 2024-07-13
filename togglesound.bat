@@ -1,25 +1,38 @@
-:: togglesound.bat
+@echo off
 color 5
-set "NC="
-::check nircmd (adjust your path accordingly)
-for /f "delims=" %%A in ("nircmd.exe") do Set "NC=C:\toggle-sound\nircmd.exe"
-if Not defined NC (Echo Can't Locate nircmd.exe&Pause&Exit /B 1)
-Set "Ini=%~dpn0.Ini"
+setlocal
 
-If Not Exist "%Ini%" goto :Speakers
-:: get current selection
-For /f "tokens=1,2 delims==" %%A in ('Findstr /i "Active" %Ini%') Do Set "Active=%%B"
-if /I "%Active%"=="Headset" goto :Speakers
+:: Path to nircmd.exe
+set "NC=C:\toggle-sound\nircmd.exe"
 
-:: switch to Headset (change "HeadsetName" to your headset name)
-%nc% setdefaultsounddevice "HeadsetName" 1
-%nc% inisetval "%Ini%" DefaultSoundDevice Active Headset
-echo Switched to Headset &Exit
-goto :Eof
-:: switch to Speakers (change "SpeakerName" to your speaker name)
+:: Check if nircmd.exe exists
+if not exist "%NC%" (
+    echo Can't locate nircmd.exe at "%NC%"
+    pause
+    exit /b 1
+)
+
+:: Path to the ini file (same as the script but with .ini extension)
+set "Ini=%~dpn0.ini"
+
+:: Check if ini file exists, if not, switch to Speakers
+if not exist "%Ini%" goto :Speakers
+
+:: Get current selection from ini file
+for /f "tokens=1,2 delims==" %%A in ('findstr /i "Active" "%Ini%"') do set "Active=%%B"
+
+:: If current selection is Headset, switch to Speakers
+if /i "%Active%"=="Headset" goto :Speakers
+
+:: Switch to Headset (change "HeadsetName" to your headset name)
+%NC% setdefaultsounddevice "HeadsetName" 1
+%NC% inisetval "%Ini%" DefaultSoundDevice Active Headset
+echo Switched to Headset
+exit /b 0
 
 :Speakers
-%nc% setDefaultSoundDevice "SpeakerName" 1
-%nc% inisetval "%Ini%" DefaultSoundDevice Active Speakers
-echo Switched to Speakers &Exit
-goto :Eof
+:: Switch to Speakers (change "SpeakerName" to your speaker name)
+%NC% setdefaultsounddevice "SpeakerName" 1
+%NC% inisetval "%Ini%" DefaultSoundDevice Active Speakers
+echo Switched to Speakers
+exit /b 0
