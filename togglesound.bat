@@ -1,4 +1,4 @@
-:: ToggleSnd.cmd
+:: ToggleSound.cmd
 color c
 set "NC="
 ::check nircmd (adjust your path accordingly)
