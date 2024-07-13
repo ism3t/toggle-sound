@@ -1,5 +1,5 @@
-:: ToggleSound.cmd
-color c
+:: togglesound.bat
+color 6
 set "NC="
 ::check nircmd (adjust your path accordingly)
 for /f "delims=" %%A in ("nircmd.exe") do Set "NC=C:\toggle-sound\nircmd.exe"
