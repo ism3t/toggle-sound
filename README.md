@@ -2,7 +2,7 @@
 
 ---
 
-# togglesound.bat
+# togglesound
 
 
 ## Overview
